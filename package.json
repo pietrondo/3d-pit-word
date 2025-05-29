@@ -1,0 +1,60 @@
+{
+  "name": "3d-pit-word",
+  "version": "0.1.0-alpha",
+  "description": "Un videogioco 3D web-based ispirato a Minecraft con dungeon, costruzioni, nemici e villaggi",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "server": "node server.js",
+    "start": "npm run server",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "test:watch": "vitest --watch",
+    "lint": "eslint src --ext .js",
+    "lint:fix": "eslint src --ext .js --fix",
+    "format": "prettier --write src/**/*.{js,css,html}"
+  },
+  "keywords": [
+    "game",
+    "3d",
+    "voxel",
+    "minecraft",
+    "threejs",
+    "webgl",
+    "multiplayer"
+  ],
+  "author": "Pietro",
+  "license": "MIT",
+  "dependencies": {
+    "three": "^0.159.0",
+    "cannon-es": "^0.20.0",
+    "socket.io": "^4.7.4",
+    "socket.io-client": "^4.7.4",
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "vite": "^5.0.8",
+    "vitest": "^1.1.0",
+    "@vitest/coverage-v8": "^1.0.0",
+    "eslint": "^8.56.0",
+    "prettier": "^3.1.1",
+    "@types/three": "^0.159.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tuousername/3d-pit-word.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tuousername/3d-pit-word/issues"
+  },
+  "homepage": "https://github.com/tuousername/3d-pit-word#readme"
+}

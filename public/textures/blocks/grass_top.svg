@@ -1,0 +1,65 @@
+<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="grassPattern" patternUnits="userSpaceOnUse" width="2" height="2">
+      <rect width="2" height="2" fill="#228B22"/>
+      <rect x="0" y="0" width="1" height="1" fill="#32CD32" opacity="0.6"/>
+      <rect x="1" y="1" width="1" height="1" fill="#006400" opacity="0.4"/>
+    </pattern>
+  </defs>
+  
+  <!-- Base grass color -->
+  <rect width="16" height="16" fill="#228B22"/>
+  
+  <!-- Grass texture pattern -->
+  <rect width="16" height="16" fill="url(#grassPattern)"/>
+  
+  <!-- Add grass blade details -->
+  <rect x="1" y="0" width="1" height="3" fill="#32CD32" opacity="0.8"/>
+  <rect x="3" y="1" width="1" height="2" fill="#90EE90" opacity="0.7"/>
+  <rect x="5" y="0" width="1" height="4" fill="#32CD32" opacity="0.6"/>
+  <rect x="7" y="2" width="1" height="2" fill="#90EE90" opacity="0.8"/>
+  <rect x="9" y="0" width="1" height="3" fill="#32CD32" opacity="0.7"/>
+  <rect x="11" y="1" width="1" height="2" fill="#90EE90" opacity="0.6"/>
+  <rect x="13" y="0" width="1" height="4" fill="#32CD32" opacity="0.8"/>
+  <rect x="15" y="2" width="1" height="2" fill="#90EE90" opacity="0.7"/>
+  
+  <!-- Second row of grass blades -->
+  <rect x="0" y="4" width="1" height="2" fill="#90EE90" opacity="0.6"/>
+  <rect x="2" y="5" width="1" height="3" fill="#32CD32" opacity="0.7"/>
+  <rect x="4" y="4" width="1" height="2" fill="#90EE90" opacity="0.8"/>
+  <rect x="6" y="6" width="1" height="2" fill="#32CD32" opacity="0.6"/>
+  <rect x="8" y="4" width="1" height="3" fill="#90EE90" opacity="0.7"/>
+  <rect x="10" y="5" width="1" height="2" fill="#32CD32" opacity="0.8"/>
+  <rect x="12" y="4" width="1" height="3" fill="#90EE90" opacity="0.6"/>
+  <rect x="14" y="6" width="1" height="2" fill="#32CD32" opacity="0.7"/>
+  
+  <!-- Third row -->
+  <rect x="1" y="8" width="1" height="2" fill="#32CD32" opacity="0.8"/>
+  <rect x="3" y="9" width="1" height="3" fill="#90EE90" opacity="0.7"/>
+  <rect x="5" y="8" width="1" height="2" fill="#32CD32" opacity="0.6"/>
+  <rect x="7" y="10" width="1" height="2" fill="#90EE90" opacity="0.8"/>
+  <rect x="9" y="8" width="1" height="3" fill="#32CD32" opacity="0.7"/>
+  <rect x="11" y="9" width="1" height="2" fill="#90EE90" opacity="0.6"/>
+  <rect x="13" y="8" width="1" height="3" fill="#32CD32" opacity="0.8"/>
+  <rect x="15" y="10" width="1" height="2" fill="#90EE90" opacity="0.7"/>
+  
+  <!-- Fourth row -->
+  <rect x="0" y="12" width="1" height="2" fill="#90EE90" opacity="0.6"/>
+  <rect x="2" y="13" width="1" height="3" fill="#32CD32" opacity="0.7"/>
+  <rect x="4" y="12" width="1" height="2" fill="#90EE90" opacity="0.8"/>
+  <rect x="6" y="14" width="1" height="2" fill="#32CD32" opacity="0.6"/>
+  <rect x="8" y="12" width="1" height="3" fill="#90EE90" opacity="0.7"/>
+  <rect x="10" y="13" width="1" height="2" fill="#32CD32" opacity="0.8"/>
+  <rect x="12" y="12" width="1" height="3" fill="#90EE90" opacity="0.6"/>
+  <rect x="14" y="14" width="1" height="2" fill="#32CD32" opacity="0.7"/>
+  
+  <!-- Add some darker spots for depth -->
+  <rect x="2" y="2" width="1" height="1" fill="#006400" opacity="0.5"/>
+  <rect x="6" y="1" width="1" height="1" fill="#006400" opacity="0.4"/>
+  <rect x="10" y="3" width="1" height="1" fill="#006400" opacity="0.6"/>
+  <rect x="14" y="1" width="1" height="1" fill="#006400" opacity="0.5"/>
+  <rect x="1" y="6" width="1" height="1" fill="#006400" opacity="0.4"/>
+  <rect x="7" y="8" width="1" height="1" fill="#006400" opacity="0.5"/>
+  <rect x="11" y="11" width="1" height="1" fill="#006400" opacity="0.6"/>
+  <rect x="15" y="13" width="1" height="1" fill="#006400" opacity="0.4"/>
+</svg>

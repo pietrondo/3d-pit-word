@@ -1,0 +1,47 @@
+<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
+  <!-- Top grass section (about 3-4 pixels) -->
+  <rect x="0" y="0" width="16" height="4" fill="#228B22"/>
+  
+  <!-- Grass blades on top -->
+  <rect x="1" y="0" width="1" height="2" fill="#32CD32" opacity="0.8"/>
+  <rect x="3" y="0" width="1" height="3" fill="#90EE90" opacity="0.7"/>
+  <rect x="5" y="0" width="1" height="2" fill="#32CD32" opacity="0.6"/>
+  <rect x="7" y="0" width="1" height="3" fill="#90EE90" opacity="0.8"/>
+  <rect x="9" y="0" width="1" height="2" fill="#32CD32" opacity="0.7"/>
+  <rect x="11" y="0" width="1" height="3" fill="#90EE90" opacity="0.6"/>
+  <rect x="13" y="0" width="1" height="2" fill="#32CD32" opacity="0.8"/>
+  <rect x="15" y="0" width="1" height="3" fill="#90EE90" opacity="0.7"/>
+  
+  <!-- Transition area with mixed grass and dirt -->
+  <rect x="0" y="3" width="16" height="1" fill="#6B4423"/>
+  <rect x="2" y="3" width="1" height="1" fill="#228B22" opacity="0.6"/>
+  <rect x="5" y="3" width="1" height="1" fill="#228B22" opacity="0.4"/>
+  <rect x="8" y="3" width="1" height="1" fill="#228B22" opacity="0.7"/>
+  <rect x="11" y="3" width="1" height="1" fill="#228B22" opacity="0.5"/>
+  <rect x="14" y="3" width="1" height="1" fill="#228B22" opacity="0.6"/>
+  
+  <!-- Dirt section (bottom part) -->
+  <rect x="0" y="4" width="16" height="12" fill="#8B4513"/>
+  
+  <!-- Dirt texture details -->
+  <rect x="1" y="5" width="2" height="1" fill="#654321" opacity="0.7"/>
+  <rect x="6" y="6" width="1" height="2" fill="#A0522D" opacity="0.6"/>
+  <rect x="11" y="7" width="2" height="1" fill="#654321" opacity="0.8"/>
+  <rect x="2" y="9" width="1" height="1" fill="#A0522D" opacity="0.5"/>
+  <rect x="8" y="10" width="2" height="1" fill="#654321" opacity="0.7"/>
+  <rect x="13" y="11" width="1" height="2" fill="#A0522D" opacity="0.6"/>
+  <rect x="4" y="13" width="3" height="1" fill="#654321" opacity="0.8"/>
+  <rect x="9" y="14" width="1" height="1" fill="#A0522D" opacity="0.5"/>
+  
+  <!-- Small highlights on dirt -->
+  <rect x="5" y="8" width="1" height="1" fill="#CD853F" opacity="0.4"/>
+  <rect x="10" y="12" width="1" height="1" fill="#CD853F" opacity="0.3"/>
+  <rect x="14" y="15" width="1" height="1" fill="#CD853F" opacity="0.4"/>
+  
+  <!-- Some grass roots extending into dirt -->
+  <rect x="3" y="4" width="1" height="1" fill="#228B22" opacity="0.3"/>
+  <rect x="7" y="5" width="1" height="1" fill="#228B22" opacity="0.2"/>
+  <rect x="12" y="4" width="1" height="1" fill="#228B22" opacity="0.4"/>
+  <rect x="1" y="6" width="1" height="1" fill="#228B22" opacity="0.2"/>
+  <rect x="15" y="5" width="1" height="1" fill="#228B22" opacity="0.3"/>
+</svg>
