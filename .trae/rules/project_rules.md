@@ -22,3 +22,4 @@ escludi .gitignore
 da .gitignore
 a ogni aggiornamento del progetto fai un commit e push
 per ogni commit scrivi un messaggio che descrive il commit
+sei già collegato al repository remoto https://github.com/pietrondo/3d-pit-word

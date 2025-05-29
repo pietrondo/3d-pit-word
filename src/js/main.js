@@ -1,30 +1,32 @@
 /**
- * 3D Pit Word - Main Entry Point
+ * main.js - Entry point per 3D Pit Word
  * 
- * Questo file è il punto di ingresso principale del gioco.
- * Gestisce l'inizializzazione, il caricamento delle risorse e l'avvio del loop di gioco.
+ * Inizializza Three.js e gestisce il loop di rendering principale.
+ * Punto di ingresso dell'applicazione con setup della scena 3D e VoxelEngine.
+ * 
+ * @author Pietro
+ * @version 0.1.0-alpha
  */
 
-import { Game } from './core/Game.js';
-import { AssetManager } from './core/AssetManager.js';
-import { UIManager } from './ui/UIManager.js';
-import { DebugManager } from './utils/DebugManager.js';
-import { CONFIG } from './config/config.js';
+import * as THREE from 'three';
+import { VoxelEngine } from './core/VoxelEngine.js';
 
 // Variabili globali
-let game;
-let assetManager;
-let uiManager;
-let debugManager;
+let scene, camera, renderer, voxelEngine;
+let clock = new THREE.Clock();
+let controls = {
+    forward: false,
+    backward: false,
+    left: false,
+    right: false,
+    up: false,
+    down: false
+};
 
-// Elementi DOM
-const loadingScreen = document.getElementById('loading-screen');
-const loadingProgress = document.getElementById('loading-progress');
-const loadingText = document.getElementById('loading-text');
-const gameContainer = document.getElementById('game-container');
-const menuSystem = document.getElementById('menu-system');
-const errorDisplay = document.getElementById('error-display');
-const errorMessage = document.getElementById('error-message');
+// Performance monitoring
+let frameCount = 0;
+let lastTime = performance.now();
+let fps = 0;
 
 /**
  * Inizializza il gioco
@@ -33,234 +35,229 @@ async function init() {
     try {
         console.log('Inizializzazione 3D Pit Word...');
         
-        // Inizializza i manager
-        debugManager = new DebugManager();
-        assetManager = new AssetManager(updateLoadingProgress);
-        uiManager = new UIManager();
+        // Setup Three.js base
+        setupThreeJS();
         
-        // Carica le risorse essenziali
-        await loadEssentialAssets();
+        // Inizializza VoxelEngine
+        voxelEngine = new VoxelEngine(scene);
         
-        // Inizializza il gioco
-        game = new Game({
-            assetManager,
-            uiManager,
-            debugManager,
-            config: CONFIG
-        });
+        // Setup controlli
+        setupControls();
         
-        // Inizializza gli eventi UI
-        setupUIEvents();
+        // Setup UI debug
+        setupDebugUI();
         
-        // Mostra il menu principale
-        showMainMenu();
+        // Genera mondo di test
+        generateTestWorld();
+        
+        // Avvia il loop di rendering
+        animate();
         
         console.log('Inizializzazione completata!');
     } catch (error) {
         console.error('Errore durante l\'inizializzazione:', error);
-        showError('Si è verificato un errore durante l\'inizializzazione del gioco: ' + error.message);
+        document.body.innerHTML = `<div style="color: red; padding: 20px;">Errore: ${error.message}</div>`;
     }
 }
 
 /**
- * Carica le risorse essenziali per il gioco
+ * Setup Three.js base
  */
-async function loadEssentialAssets() {
-    updateLoadingText('Caricamento risorse...');
+function setupThreeJS() {
+    // Scena
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x87CEEB); // Sky blue
     
-    try {
-        // Registra le risorse da caricare
-        assetManager.registerTextures([
-            { id: 'dirt', url: '/textures/blocks/dirt.png' },
-            { id: 'grass_top', url: '/textures/blocks/grass_top.png' },
-            { id: 'grass_side', url: '/textures/blocks/grass_side.png' },
-            { id: 'stone', url: '/textures/blocks/stone.png' },
-            { id: 'wood', url: '/textures/blocks/wood.png' },
-            { id: 'leaves', url: '/textures/blocks/leaves.png' },
-        ]);
-        
-        assetManager.registerModels([
-            // I modelli verranno aggiunti in seguito
-        ]);
-        
-        assetManager.registerSounds([
-            { id: 'background', url: '/sounds/background.mp3' },
-            { id: 'dig', url: '/sounds/dig.mp3' },
-            { id: 'place', url: '/sounds/place.mp3' },
-        ]);
-        
-        // Avvia il caricamento
-        await assetManager.loadAll();
-        
-    } catch (error) {
-        console.error('Errore durante il caricamento delle risorse:', error);
-        throw new Error('Impossibile caricare le risorse necessarie');
-    }
+    // Camera
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 10, 10);
+    
+    // Renderer
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    document.body.appendChild(renderer.domElement);
+    
+    // Luci
+    const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+    scene.add(ambientLight);
+    
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight.position.set(50, 50, 50);
+    directionalLight.castShadow = true;
+    directionalLight.shadow.mapSize.width = 2048;
+    directionalLight.shadow.mapSize.height = 2048;
+    scene.add(directionalLight);
+    
+    // Resize handler
+    window.addEventListener('resize', onWindowResize);
 }
 
 /**
- * Aggiorna la barra di caricamento
- * @param {number} progress - Progresso da 0 a 1
- * @param {string} assetType - Tipo di risorsa in caricamento
- * @param {string} assetId - ID della risorsa in caricamento
+ * Setup controlli
  */
-function updateLoadingProgress(progress, assetType, assetId) {
-    const percentage = Math.floor(progress * 100);
-    loadingProgress.style.width = `${percentage}%`;
-    
-    if (assetType && assetId) {
-        updateLoadingText(`Caricamento ${assetType}: ${assetId} (${percentage}%)`);
-    } else {
-        updateLoadingText(`Caricamento: ${percentage}%`);
-    }
-}
-
-/**
- * Aggiorna il testo di caricamento
- * @param {string} text - Testo da mostrare
- */
-function updateLoadingText(text) {
-    loadingText.textContent = text;
-}
-
-/**
- * Configura gli eventi dell'interfaccia utente
- */
-function setupUIEvents() {
-    // Pulsanti del menu principale
-    document.getElementById('btn-play').addEventListener('click', startGame);
-    document.getElementById('btn-settings').addEventListener('click', showSettingsMenu);
-    document.getElementById('btn-about').addEventListener('click', showAboutMenu);
-    
-    // Pulsanti del menu impostazioni
-    document.getElementById('btn-back-settings').addEventListener('click', showMainMenu);
-    
-    // Slider e select delle impostazioni
-    const renderDistanceSlider = document.getElementById('render-distance');
-    const renderDistanceValue = document.getElementById('render-distance-value');
-    renderDistanceSlider.addEventListener('input', () => {
-        renderDistanceValue.textContent = renderDistanceSlider.value;
-        if (game) {
-            game.updateRenderDistance(parseInt(renderDistanceSlider.value));
-        }
-    });
-    
-    const audioVolumeSlider = document.getElementById('audio-volume');
-    const audioVolumeValue = document.getElementById('audio-volume-value');
-    audioVolumeSlider.addEventListener('input', () => {
-        const volume = audioVolumeSlider.value;
-        audioVolumeValue.textContent = `${volume}%`;
-        if (assetManager) {
-            assetManager.setGlobalVolume(volume / 100);
-        }
-    });
-    
-    const graphicsQualitySelect = document.getElementById('graphics-quality');
-    graphicsQualitySelect.addEventListener('change', () => {
-        if (game) {
-            game.updateGraphicsQuality(graphicsQualitySelect.value);
-        }
-    });
-    
-    // Pulsante di ricarica in caso di errore
-    document.getElementById('btn-reload').addEventListener('click', () => {
-        window.location.reload();
-    });
-    
-    // Tasto ESC per aprire il menu
+function setupControls() {
+    // Controlli tastiera
     document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') {
-            if (game && game.isRunning()) {
-                pauseGame();
-            }
+        switch(event.code) {
+            case 'KeyW': controls.forward = true; break;
+            case 'KeyS': controls.backward = true; break;
+            case 'KeyA': controls.left = true; break;
+            case 'KeyD': controls.right = true; break;
+            case 'Space': controls.up = true; event.preventDefault(); break;
+            case 'ShiftLeft': controls.down = true; break;
+        }
+    });
+    
+    document.addEventListener('keyup', (event) => {
+        switch(event.code) {
+            case 'KeyW': controls.forward = false; break;
+            case 'KeyS': controls.backward = false; break;
+            case 'KeyA': controls.left = false; break;
+            case 'KeyD': controls.right = false; break;
+            case 'Space': controls.up = false; break;
+            case 'ShiftLeft': controls.down = false; break;
+        }
+    });
+    
+    // Controlli mouse
+    let isPointerLocked = false;
+    
+    document.addEventListener('click', () => {
+        if (!isPointerLocked) {
+            renderer.domElement.requestPointerLock();
+        }
+    });
+    
+    document.addEventListener('pointerlockchange', () => {
+        isPointerLocked = document.pointerLockElement === renderer.domElement;
+    });
+    
+    document.addEventListener('mousemove', (event) => {
+        if (isPointerLocked) {
+            const sensitivity = 0.002;
+            camera.rotation.y -= event.movementX * sensitivity;
+            camera.rotation.x -= event.movementY * sensitivity;
+            camera.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, camera.rotation.x));
         }
     });
 }
 
 /**
- * Mostra il menu principale
+ * Setup UI debug
  */
-function showMainMenu() {
-    hideAllMenus();
-    menuSystem.classList.remove('hidden');
-    document.getElementById('main-menu').classList.add('active');
+function setupDebugUI() {
+    const debugDiv = document.createElement('div');
+    debugDiv.id = 'debug-info';
+    debugDiv.style.cssText = `
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        background: rgba(0,0,0,0.7);
+        color: white;
+        padding: 10px;
+        font-family: monospace;
+        font-size: 12px;
+        z-index: 1000;
+    `;
+    document.body.appendChild(debugDiv);
 }
 
 /**
- * Mostra il menu delle impostazioni
+ * Genera mondo di test
  */
-function showSettingsMenu() {
-    hideAllMenus();
-    document.getElementById('settings-menu').classList.add('active');
-}
-
-/**
- * Mostra il menu delle informazioni
- */
-function showAboutMenu() {
-    // Da implementare
-}
-
-/**
- * Nasconde tutti i menu
- */
-function hideAllMenus() {
-    const menus = document.querySelectorAll('.menu');
-    menus.forEach(menu => menu.classList.remove('active'));
-}
-
-/**
- * Avvia il gioco
- */
-function startGame() {
-    try {
-        // Nascondi il menu e mostra il gioco
-        menuSystem.classList.add('hidden');
-        gameContainer.classList.remove('hidden');
-        
-        // Avvia il gioco
-        game.start();
-        
-        // Blocca il puntatore per il controllo della camera
-        document.getElementById('game-canvas').requestPointerLock();
-        
-    } catch (error) {
-        console.error('Errore durante l\'avvio del gioco:', error);
-        showError('Si è verificato un errore durante l\'avvio del gioco: ' + error.message);
+function generateTestWorld() {
+    // Genera alcuni chunk di test
+    for (let x = -2; x <= 2; x++) {
+        for (let z = -2; z <= 2; z++) {
+            const chunk = voxelEngine.getOrCreateChunk(x, 0, z);
+            
+            // Genera terreno semplice
+            for (let cx = 0; cx < 16; cx++) {
+                for (let cz = 0; cz < 16; cz++) {
+                    const height = Math.floor(Math.random() * 4) + 2;
+                    for (let cy = 0; cy < height; cy++) {
+                        chunk.setVoxel(cx, cy, cz, cy === height - 1 ? 2 : 1); // Grass top o dirt
+                    }
+                }
+            }
+            
+            voxelEngine.updateChunkMesh(chunk);
+        }
     }
 }
 
 /**
- * Mette in pausa il gioco
+ * Update controlli camera
  */
-function pauseGame() {
-    if (game) {
-        game.pause();
-    }
-    showMainMenu();
-}
-
-/**
- * Mostra un messaggio di errore
- * @param {string} message - Messaggio di errore
- */
-function showError(message) {
-    errorMessage.textContent = message;
-    errorDisplay.classList.remove('hidden');
-}
-
-// Avvia l'inizializzazione quando il DOM è caricato
-document.addEventListener('DOMContentLoaded', () => {
-    // Nascondi il contenitore di gioco e il menu durante il caricamento
-    gameContainer.classList.add('hidden');
-    menuSystem.classList.add('hidden');
+function updateControls() {
+    const speed = 0.1;
+    const direction = new THREE.Vector3();
     
-    // Inizializza il gioco
-    init();
-});
+    if (controls.forward) direction.z -= 1;
+    if (controls.backward) direction.z += 1;
+    if (controls.left) direction.x -= 1;
+    if (controls.right) direction.x += 1;
+    if (controls.up) direction.y += 1;
+    if (controls.down) direction.y -= 1;
+    
+    direction.normalize();
+    direction.multiplyScalar(speed);
+    
+    // Applica rotazione camera alla direzione
+    direction.applyQuaternion(camera.quaternion);
+    camera.position.add(direction);
+}
 
-// Gestione degli errori globali
-window.addEventListener('error', (event) => {
-    console.error('Errore globale:', event.error);
-    showError('Si è verificato un errore: ' + event.error.message);
-});
+/**
+ * Update performance stats
+ */
+function updatePerformanceStats() {
+    frameCount++;
+    const currentTime = performance.now();
+    
+    if (currentTime - lastTime >= 1000) {
+        fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
+        frameCount = 0;
+        lastTime = currentTime;
+        
+        const debugDiv = document.getElementById('debug-info');
+        if (debugDiv) {
+            debugDiv.innerHTML = `
+                FPS: ${fps}<br>
+                Position: ${camera.position.x.toFixed(1)}, ${camera.position.y.toFixed(1)}, ${camera.position.z.toFixed(1)}<br>
+                Chunks: ${voxelEngine ? voxelEngine.chunks.size : 0}<br>
+                Triangles: ${renderer.info.render.triangles}
+            `;
+        }
+    }
+}
+
+/**
+ * Resize handler
+ */
+function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+/**
+ * Loop di rendering principale
+ */
+function animate() {
+    requestAnimationFrame(animate);
+    
+    updateControls();
+    updatePerformanceStats();
+    
+    renderer.render(scene, camera);
+}
+
+// Avvia l'inizializzazione quando il DOM è pronto
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
